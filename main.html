@@ -1,14 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Infinite Scroll</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    #container {
+      width: 300px;
+      height: 300px;
+      margin: 20px auto;
+      border: 5px solid black;
+      overflow-y: scroll;
+    }
+
+    #infinite-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #infinite-list li {
+      padding: 15px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    #infinite-list li:hover {
+      background-color: lightgray;
+    }
+
+    #sentinel {
+      height: 1px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Infinite Scroll List</h1>
-  <ul id="infinite-list"></ul>
-  <script src="script.js"></script>
+  <h1>Infinite Scroll</h1>
+  <div id="container">
+    <ul id="infinite-list">
+      <!-- Items go here -->
+      <li id="sentinel"></li>
+    </ul>
+  </div>
+
+  <script>
+    const list = document.getElementById("infinite-list");
+    const sentinel = document.getElementById("sentinel");
+    let itemCount = 0;
+
+    function addItems(count) {
+      for (let i = 0; i < count; i++) {
+        const li = document.createElement("li");
+        li.textContent = `Item ${++itemCount}`;
+        list.insertBefore(li, sentinel);
+      }
+    }
+
+    // Initial load
+    addItems(10);
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        addItems(2);
+      }
+    }, {
+      root: document.getElementById("container"),
+      rootMargin: '0px',
+      threshold: 1.0
+    });
+
+    observer.observe(sentinel);
+  </script>
 </body>
 </html>
